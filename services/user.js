@@ -18,13 +18,13 @@ exports.createUser = async params => {
 };
 
 exports.login = async (username, password) => {
-  const user = await User.findOne({ username });
+  const user = await User.findOne({ username })
   if (!user) return Promise.reject('로그인에 실패했습니다.');
 
   const result = await bcrypt.compare(password, user.password);
   if (!result) return Promise.reject('로그인에 실패했습니다.');
 
-  const { password: _, ...restUserData } = user;
+  const { password: _, ...restUserData } = user.toJSON();
 
   return restUserData;
 }
