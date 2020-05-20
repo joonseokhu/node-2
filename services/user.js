@@ -1,7 +1,9 @@
 const path = require('path');
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const JWT = require('../utils/jwt');
+
+const jwt = new JWT(process.env.TOKEN_SECRET);
 
 exports.createUser = async params => {
   const hashedPassword = await bcrypt.hash(params.password, 10);
@@ -27,10 +29,16 @@ exports.login = async (username, password) => {
   return restUserData;
 }
 
-exports.createToken = async (user) => {
-  const salt = process.env.TOKEN_SECRET;
-  // jwt.sign(user, salt, )
-}
+// exports.createToken = async (user) => {
+//   const token = await jwt.sign(user, {
+//     expiresIn: '1d'
+//   });
+//   return token
+// }
+
+exports.createToken = user => jwt.sign(user, {
+  expiresIn: '1d'
+});
 
 // const GetPath = root => name => {
 //   return path.join(__dirname, root, `${name}.txt`)

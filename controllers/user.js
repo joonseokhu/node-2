@@ -20,6 +20,17 @@ exports.createUser = async (req, res, next) => {
   }
 }
 
+exports.login = async (req, res, next) => {
+  try {
+    const { username, password } = req.body
+    const user = await userService.login(username, password);
+    const token = await userService.createToken(user);
+    res.json({ token });
+  } catch (err) {
+    next(err);
+  }
+}
+
 // const createUserFile = async (req, res, next) => {
 //   try {
 //     // 요청 가공해서 필요한 정보를 요청에서 추출

@@ -11,6 +11,13 @@ app.use(express.json());
 
 app.use('/user', userRoutes);
 
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(err.status || 500).json({
+    message: err.message || 'Unknown Error',
+  });
+});
+
 // app.get('/user/:id', (req, res, next) => {
 //   res.json({
 //     id: req.params.id,
