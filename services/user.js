@@ -17,6 +17,16 @@ exports.createUser = async params => {
   return user;
 };
 
+exports.getOneUser = async data => {
+  const { id } = data;
+  const user = await User
+    .findOne({ _id: id }, { password: false })
+  if (!user) {
+    return Promise.reject('유저가 없습니다.')
+  }
+  return user;
+};
+
 exports.login = async (username, password) => {
   const user = await User.findOne({ username })
   if (!user) return Promise.reject('로그인에 실패했습니다.');
@@ -36,9 +46,13 @@ exports.login = async (username, password) => {
 //   return token
 // }
 
+
+
 exports.createToken = user => jwt.sign(user, {
   expiresIn: '1d'
 });
+
+exports.checkToken = token => jwt.verify(token);
 
 // const GetPath = root => name => {
 //   return path.join(__dirname, root, `${name}.txt`)

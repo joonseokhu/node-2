@@ -2,6 +2,10 @@ const express = require('express');
 const app = express();
 
 const userRoutes = require('./routes/user');
+const articleRoutes = require('./routes/article');
+const userService = require('./services/user');
+
+console.log('동해물과백두산이')
 
 // const path = require('path')
 // const file = require('./file');
@@ -9,10 +13,25 @@ const userRoutes = require('./routes/user');
 
 app.use(express.json());
 
+app.use(async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    // console.log('auth 헤더', authHeader);
+    const data = await userService.checkToken(authHeader);
+    const user = await userService.getOneUser({ id: data._id });
+    req.user = user;
+    console.log('auth 헤더', data);
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.use('/user', userRoutes);
+app.use('/article', articleRoutes);
 
 app.use((err, req, res, next) => {
-  console.error(err);
+  console.error('에러', err);
   res.status(err.status || 500).json({
     message: err.message || 'Unknown Error',
   });

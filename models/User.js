@@ -5,6 +5,14 @@ const UserSchema = new Schema({
   password: { type: String, required: true, },
   name: { type: String },
   createdAt: { type: Date, default: Date.now() },
+  // Articles: [{
+  //   title: { type: String },
+  //   content: { type: String },
+  // }],
+  // Articles: [{ type: Schema.Types.ObjectId, ref: 'Article' }],
+  // Comments: [{ type: Schema.Types.ObjectId, ref: 'Comments' }],
 });
+
+
 
 module.exports = model('User', UserSchema);
