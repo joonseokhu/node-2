@@ -13,10 +13,10 @@ exports.updateArticle = async data => {
   const { id, title, content, user } = data;
   const prev = await Article.findOne({ _id: id });
   if (!prev) {
-    return Promise.reject('게시물이 없습니다.')
+    return Promise.reject([404, '게시물이 없습니다.'])
   }
   if (prev.createdBy !== user.id) {
-    return Promise.reject('본인이 아닙니다.')
+    return Promise.reject([403, '본인이 아닙니다.'])
   };
   return Article.findOneAndUpdate(
     { _id: id },
@@ -31,10 +31,10 @@ exports.deleteArticle = async data => {
   const { id, user } = data;
   const prev = await Article.findOne({ _id: id });
   if (!prev) {
-    return Promise.reject('게시물이 없습니다.')
+    return Promise.reject([404, '게시물이 없습니다.'])
   }
   if (prev.createdBy !== user.id) {
-    return Promise.reject('본인이 아닙니다.')
+    return Promise.reject([403, '본인이 아닙니다.'])
   };
   return Article.deleteOne({ _id: id });
 }
@@ -45,7 +45,7 @@ exports.getOneArticle = async data => {
     .findOne({ _id: id })
     .populate('createdBy', '-password');
   if (!article) {
-    return Promise.reject('게시물이 없습니다.')
+    return Promise.reject([404, '게시물이 없습니다.'])
   }
   return article;
 }
@@ -62,6 +62,11 @@ exports.getArticles = async data => {
   })
   .limit(limit)
   .skip((page - 1) * limit)
+  .populate('createdBy', '-password')
 
-  return articles;
+  const count = await Article.countDocuments({
+
+  });
+
+  return [ articles, count ];
 }

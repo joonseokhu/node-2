@@ -22,6 +22,7 @@ exports.createUser = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   try {
+    if (req.user) await Promise.reject([403, '이미 로그인 상태입니다.'])
     const { username, password } = req.body
     const user = await userService.login(username, password);
     const token = await userService.createToken(user);

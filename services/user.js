@@ -22,17 +22,17 @@ exports.getOneUser = async data => {
   const user = await User
     .findOne({ _id: id }, { password: false })
   if (!user) {
-    return Promise.reject('유저가 없습니다.')
+    return Promise.reject([404, '유저가 없습니다.'])
   }
   return user;
 };
 
 exports.login = async (username, password) => {
   const user = await User.findOne({ username })
-  if (!user) return Promise.reject('로그인에 실패했습니다.');
+  if (!user) return Promise.reject([401, '로그인에 실패했습니다.']);
 
   const result = await bcrypt.compare(password, user.password);
-  if (!result) return Promise.reject('로그인에 실패했습니다.');
+  if (!result) return Promise.reject([401, '로그인에 실패했습니다.']);
 
   const { password: _, ...restUserData } = user.toJSON();
 

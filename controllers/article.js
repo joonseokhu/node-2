@@ -5,7 +5,7 @@ exports.createArticle = async (req, res, next) => {
     const article = await articleService.createArticle({
       title: req.body.title,
       content: req.body.content,
-      createdBy: req.user,
+      user: req.user.id,
     });
     res.json(article);
   } catch (err) {
@@ -35,7 +35,11 @@ exports.getOneArticle = async (req, res, next) => {
 }
 exports.getArticles = async (req, res, next) => {
   try {
-
+    const [items, count] = await articleService.getArticles({});
+    res.json({
+      items,
+      count
+    });
   } catch (err) {
     next(err)
   }

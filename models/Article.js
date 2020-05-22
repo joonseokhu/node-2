@@ -1,9 +1,10 @@
 const  { Schema, model } = require('mongoose');
 
-const ArticleSchema = new Schema({
+const ArticleSchema = new Schema({ // 클래스, 객체생성자, 필드의 제약조건 등등
   title: { type: String, required: true },
   content: { type: String, required: true },
-  createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
+  sdsafs: { type: String },
+  createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() },
   deletedAt: { type: Date },
