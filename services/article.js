@@ -23,7 +23,10 @@ exports.updateArticle = async data => {
     {
       title,
       content,
-    }
+    },
+    {
+      returnNewDocument: true,
+    },
   );
 }
 
@@ -69,4 +72,58 @@ exports.getArticles = async data => {
   });
 
   return [ articles, count ];
+}
+
+exports.addLike = async data => {
+  const { id, user } = data;
+  
+  const article = await Article.findOne({ _id: id });
+  
+  const hasLiked = article.likes.filter(like => {
+    return like.toString() === user.id
+  });
+  if (hasLiked.length) {
+    return Promise.reject([403, '이미 좋아요 했습니다']);
+  }
+  // 글을 가져오고 그 글의 좋아요 목록에 내 아이디가 있는지 찾아서 있으면 에러
+  return Article.findOneAndUpdate(
+    { _id: id },
+    {
+      // likes: article.likes.concat(user.id),
+      $push: {
+        likes: user.id
+      },
+    },
+    {
+      new: true,
+    },
+  )
+}
+
+exports.removeLike = async data => {
+  const { id, user } = data;
+  
+  const article = await Article.findOne({ _id: id });
+  
+  const hasLiked = article.likes.filter(like => {
+    return like.toString() === user.id
+  });
+
+  if (!hasLiked.length) {
+    return Promise.reject([403, '취소할 좋아요가 없습니다.']);
+  }
+
+  // 글을 가져오고 그 글의 좋아요 목록에 내 아이디가 있는지 찾아서 있으면 에러
+  return Article.findOneAndUpdate(
+    { _id: id },
+    {
+      // likes: article.likes.filter(like => like.toString() !== user.id),
+      $pull: {
+        likes: user.id,
+      },
+    },
+    {
+      new: true,
+    }
+  );
 }

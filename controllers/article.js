@@ -44,4 +44,25 @@ exports.getArticles = async (req, res, next) => {
     next(err)
   }
 }
-
+exports.addLike = async (req, res, next) => {
+  try {
+    const nextArticle = await articleService.addLike({
+      id: req.params.id,
+      user: req.user,
+    });
+    res.json(nextArticle);
+  } catch (err) {
+    next(err)
+  }
+}
+exports.removeLike = async (req, res, next) => {
+  try {
+    const nextArticle = await articleService.removeLike({
+      id: req.params.id,
+      user: req.user,
+    });
+    res.json(nextArticle);
+  } catch (err) {
+    next(err)
+  }
+}
